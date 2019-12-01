@@ -1,74 +1,124 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { render } from 'react-dom';
 
-let PRODUCTS = {
-    '1':{id: 1, category: 'Smart Home', price: '$70.99', name: 'Door Lock'},
-    '2':{id: 2, category: 'Smart Home', price: '$139.99', name: 'Thermostat'},
-    '3':{id: 3, category: 'Smart Home', price: '$125.90', name: 'Security System'},
-    '4':{id: 4, category: 'Furniture', price: '$369.00', name: 'Recliner'},
-    '5':{id: 5, category: 'Furniture', price: '$100.00', name: 'Ottoman'},
-    '6':{id: 6, category: 'Furniture', price: '$800.00', name: 'Chaise Lounge'},
-};
+let PRODUCTS = [
+    {"id": 1, "category": "Smart Home", "price": "$70.99", "name": 'Door Lock'},
+    {"id": 2, "category": "Smart Home", "price": "$139.99", "name": 'Thermostat'},
+    {"id": 3, "category": "Smart Home", "price": "$125.90", "name": 'Security System'},
+    {"id": 4, "category": "Furniture", "price": "$369.00", "name": 'Recliner'},
+    {"id": 5, "category": "Furniture", "price": "$100.00", "name": 'Ottoman'},
+    {"id": 6, "category": "Furniture", "price": "$800.00", "name": 'Chaise Lounge'}
+]
 
-const Inventory = ({ProductOneName, ProductOnePrice, ProductTwoName, ProductTwoPrice,ProductFivePrice,
-ProductThreeName, ProductThreePrice, ProductFourName, ProductFourPrice, ProductFiveName,
-ProductSixName,ProductSixPrice}) => {
+const ProductInfo = ({name, price, deleteProduct}) => {
     return (
-        <main>        
-            <input type="search" placeholder="Search..."></input>
-            <table>
-                <tr>
-                    <th>name</th>
-                    <th>price</th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <td>{ProductOneName}</td>
-                    <td>{ProductOnePrice}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>{ProductTwoName}</td>
-                    <td>{ProductTwoPrice}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>{ProductThreeName}</td>
-                    <td>{ProductThreePrice}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>{ProductFourName}</td>
-                    <td>{ProductFourPrice}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>{ProductFiveName}</td>
-                    <td>{ProductFivePrice}</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>{ProductSixName}</td>
-                    <td>{ProductSixPrice}</td>
-                    <td></td>
-                </tr>
-            </table>
-        </main>
-
+            <tr>
+                <td>{name}</td>
+                <td>{price}</td>
+                <td>{deleteProduct}</td>
+            </tr>
     )
-} 
+}
+
+
+class Inventory extends Component {
+    state = {
+        name: "",
+        price: "",
+         rows: [],
+        filtered:false,
+        data:[]
+        }
+
+    handleChange = e => {
+        this.setState({name: e.target.value})
+    }
+
+    handlePriceChange = e => {
+        this.setState({price: e.target.value})
+    }
+
+    handleSubmit = e => {
+        PRODUCTS.push({"id": PRODUCTS.length+1,"category":"Furniture", "price": this.state.price, "name":this.state.name})
+        render(<Inventory
+            products={PRODUCTS}/>, document.getElementById('root'));
+        e.preventDefault()
+
+    }
+    handleDelete = e => {
+        //var rows = document.getElementsByTagName("tr")
+      this.setState({rows: document.getElementsByTagName("tr")});
+      this.state.rows.map( row => {
+        console.log(row.td)
+        return <div><td>row.td</td></div>
+     })
+    }
+
+    filterResults = e => {
+        const arr = this.props.products
+        const filteredProducts =  arr.filter(product => product.name === e.target.value)
+        this.setState({filtered:true})
+        this.setState({data: filteredProducts})
+        if(e.target.value === "") {
+            this.setState({filtered:false})
+        }
+        e.preventDefault()
+      }
+      
+    render() {
+        const { products } = this.props
+        return (
+            <div>
+                <input type="search" onChange = {this.filterResults} placeholder="Search..." />
+                <table id = "products">
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>price</th>
+                        </tr>
+                    </thead>
+                    {this.state.filtered
+                    ? <tbody>
+                        {this.state.data.map(
+                        (product, i) =>
+                        <ProductInfo
+                                key = {i}
+                                name = {product.name}
+                                price ={product.price}
+                                deleteProduct = {<button onClick = {this.handleDelete}>x</button>} 
+                        /> 
+                        )}
+                    </tbody>
+                    :<tbody>
+                        {products.map (
+                            (product, i) =>
+                            <ProductInfo
+                                    key = {i}
+                                    name = {product.name}
+                                    price ={product.price}
+                                    deleteProduct = {<button onClick = {this.handleDelete}>x</button>} 
+                            />
+                        )}
+                    </tbody>
+                }            
+                </table>
+                <h3>Enter a new product</h3>
+                <form onSubmit={this.handleSubmit}>
+                    <label>
+                        Name<br/>
+                        <input type="text" value = {this.state.name} onChange = {this.handleChange} />
+                    </label><br/>
+                    <label>
+                        Price<br/>
+                        <input type="text" value = {this.state.price} onChange = {this.handlePriceChange} />
+                    </label><br/>
+                    <input type="submit" value = "submit" />
+                </form>
+            </div>
+        )
+    }
+}
 
 render(<Inventory
-    ProductOneName = {PRODUCTS[1].name} 
-    ProductOnePrice = {PRODUCTS[1].price}
-    ProductTwoName = {PRODUCTS[2].name}
-    ProductTwoPrice = {PRODUCTS[2].price}
-    ProductThreeName = {PRODUCTS[3].name}
-    ProductThreePrice = {PRODUCTS[3].price}
-    ProductFourName = {PRODUCTS[4].name}
-    ProductFourPrice = {PRODUCTS[4].price}
-    ProductFiveName = {PRODUCTS[5].name}
-    ProductFivePrice = {PRODUCTS[5].price}
-    ProductSixName = {PRODUCTS[6].name}
-    ProductSixPrice = {PRODUCTS[6].price}/>, document.getElementById('root'));
+    products={PRODUCTS}/>, document.getElementById('root'));
 
