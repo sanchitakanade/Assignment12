@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { render } from 'react-dom';
-
+import PropTypes from 'prop-types'
 let PRODUCTS = [
     {"id": 1, "category": "Smart Home", "price": "$70.99", "name": 'Door Lock'},
     {"id": 2, "category": "Smart Home", "price": "$139.99", "name": 'Thermostat'},
@@ -20,14 +20,20 @@ const ProductInfo = ({name, price, deleteProduct}) => {
     )
 }
 
+const Filter  = () => {
+    return (
+        <input type="search" onChange = {this.filterResults} placeholder="Search..." />
+    )
+}
 
-class Inventory extends Component {
+class Products extends Component {
     state = {
         name: "",
         price: "",
-         rows: [],
+        category:"",
         filtered:false,
-        data:[]
+        data:[],
+        deleteFlag: false
         }
 
     handleChange = e => {
@@ -38,21 +44,25 @@ class Inventory extends Component {
         this.setState({price: e.target.value})
     }
 
+    handleCategoryChange = e => {
+        this.setState({category: e.target.value})
+    }
+
     handleSubmit = e => {
-        PRODUCTS.push({"id": PRODUCTS.length+1,"category":"Furniture", "price": this.state.price, "name":this.state.name})
-        render(<Inventory
+        PRODUCTS.push({"id": PRODUCTS.length+1,"category":this.state.category, "price": this.state.price, "name":this.state.name})
+        render(<Products
             products={PRODUCTS}/>, document.getElementById('root'));
         e.preventDefault()
 
     }
     handleDelete = e => {
-        //var rows = document.getElementsByTagName("tr")
-      this.setState({rows: document.getElementsByTagName("tr")});
-      this.state.rows.map( row => {
-        console.log(row.td)
-        return <div><td>row.td</td></div>
-     })
+      const cells = document.getElementsByTagName("td")
+      console.log(cells.filter(cell => cell === e.target))
+     // var deleteButton = 
+     // console.log(deleteButton)
+     // deleteButton.innerHTML = "";
     }
+    
 
     filterResults = e => {
         const arr = this.props.products
@@ -109,6 +119,11 @@ class Inventory extends Component {
                         <input type="text" value = {this.state.name} onChange = {this.handleChange} />
                     </label><br/>
                     <label>
+                        Category<br/>
+                        <input type="text" value = {this.state.category} onChange = {this.handleCategoryChange} />
+                    </label><br/>
+
+                    <label>
                         Price<br/>
                         <input type="text" value = {this.state.price} onChange = {this.handlePriceChange} />
                     </label><br/>
@@ -119,6 +134,9 @@ class Inventory extends Component {
     }
 }
 
-render(<Inventory
+Products.propTypes = {
+    products:PropTypes.array
+}
+render(<Products
     products={PRODUCTS}/>, document.getElementById('root'));
 
