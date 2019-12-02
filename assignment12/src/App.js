@@ -1,26 +1,25 @@
-import React from 'react';
+/* Name: Sanchita Kanade
+	 Instructor Name: Zak Ruvalcaba
+	 Class: CS648.01 Modern Web Development Frameworks Fall 2019
+	 File: App.js
+   Assignment No.: 12
+*/
+import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Products } from './Product'
+import { PRODUCTS } from './Product'
+import { render } from 'react-dom';
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+      <div>
+        <Products products = {PRODUCTS}/>
+      </div>
+    );
 }
+
+render( <App/>,document.getElementById('root'))
 
 export default App;
