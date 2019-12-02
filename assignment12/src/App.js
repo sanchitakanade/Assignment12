@@ -12,14 +12,14 @@ import { PRODUCTS } from './Product'
 import { render } from 'react-dom';
 
 
-function App() {
+function App(productsArray) {
     return (
       <div>
-        <Products products = {PRODUCTS}/>
+        <Products products = {productsArray}/>
       </div>
     );
 }
 
-render( <App/>,document.getElementById('root'))
+render( <App productsArray = {PRODUCTS}/>,document.getElementById('root'))
 
 export default App;
